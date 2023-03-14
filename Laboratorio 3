@@ -1,0 +1,66 @@
+// arduino
+const int ledRojo = 7;
+const int ledAzul = 5;
+const int ledVerde = 6;
+const int pb1 = 2;
+const int pb2 = 3;
+const int pb3 = 4;
+int potpin = A2;
+int val=0;
+
+
+
+void setup() {
+  pinMode(ledRojo, OUTPUT);
+  pinMode(ledAzul, OUTPUT);
+  pinMode(ledVerde, OUTPUT);
+  pinMode(pb1, INPUT_PULLUP);
+  pinMode(pb2, INPUT_PULLUP);
+  pinMode(pb3, INPUT_PULLUP);
+  Serial.begin(9600);
+}
+
+void loop() {
+  if (digitalRead(pb1) == LOW) {
+    digitalWrite(ledRojo, HIGH);
+  } else {
+    digitalWrite(ledRojo, LOW);
+  }
+  if (digitalRead(pb2) == LOW) {
+    digitalWrite(ledAzul, HIGH);
+  } else {
+    digitalWrite(ledAzul, LOW);
+  }
+  if (digitalRead(pb3) == LOW) {
+    digitalWrite(ledVerde, HIGH);
+  } else {
+    digitalWrite(ledVerde, LOW);
+  }
+  val = analogRead(A2);
+  int medida = map(val,0, 1023, 0, 100);
+  Serial.write(medida);
+  delay(50);
+}
+
+
+//Procesing
+import processing.serial.*;
+
+Serial puertoSerie; // Variable para la comunicación serial
+int valorPotenciometro = 0; // Variable para almacenar el valor recibido
+
+void setup() {
+  size(400, 200); // Tamaño de la ventana de Processing
+  puertoSerie = new Serial(this, "COM4", 9600); // Inicia la comunicación serial con Arduino
+}
+
+void draw() {
+  background(255); // Fondo blanco
+  fill(0); // Texto en negro
+  textSize(24); // Tamaño de letra
+  text("Valor del potenciómetro: " + valorPotenciometro, 50, 100); // Muestra el valor del potenciómetro
+}
+
+void serialEvent(Serial puertoSerie) {
+  valorPotenciometro = puertoSerie.read(); // Lee el valor enviado por Arduino
+}
